@@ -1,6 +1,8 @@
 $(document).ready(function () {
-    if (inIframe) {
+    if (self!=window) {
         $('#usernameModal').modal('show');
+    } else {
+        $('#usernameModal').modal('hide');
     }
 });
 
