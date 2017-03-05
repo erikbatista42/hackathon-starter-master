@@ -191,4 +191,14 @@ app.listen(app.get('port'), () => {
   console.log('  Press CTRL-C to stop\n');
 });
 
+
+var vidStartTime = new Date().getTime();
+app.get('/seek', function(req,res){
+    var website = req.body.website;
+    var videoid = req.body.id;
+    var date= new Date().getTime();
+    var currentTime = date-vidStartTime;
+    res.send('{"date":'+date+', "currentTime":'+currentTime+'}');
+});
+
 module.exports = app;

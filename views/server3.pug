@@ -1,4 +1,160 @@
-extends layout
-
-block content
-   code code
+html
+  head
+    script(src='/js/jquery-3.1.1.min.js')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css', integrity='sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp', crossorigin='anonymous')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+    script(src='https://www.gstatic.com/firebasejs/live/3.0/firebase.js')
+    style(type='text/css').
+      body {
+      overflow: hidden;
+      background: #2C3E50;
+      color: white;
+      }
+      #title {
+      font-family: avenir;
+      padding-left: 20px;
+      }
+      #time {
+      padding-left: 20px;
+      }
+      #player {
+      pointer-events: none;
+      position: relative;
+      top: 50 %;
+      transform: transalteY(-50 %);
+      }
+      .chat {
+      float: right;
+      margin: 0 auto;
+      width: 400px;
+      overflow: hidden;
+      }
+      .chat .messages {
+      width: 100%;
+      height: calc(100% - 55px);
+      overflow: hidden;
+      }
+      .chat .messages:hover {
+      overflow-y: scroll;
+      }
+      .chat .messages > div {
+      padding: 15px;
+      border-bottom: 1px solid #999;
+      }
+      .modal {
+      color: black;
+      }
+  body
+    #usernameModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='memberModalLabel', aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          form
+            .modal-header
+              h4#memberModalLabel.modal-title Enter a username
+            .modal-body
+              input#username(type='text')
+            .modal-footer
+              button.btn.btn-primary(type='submit', data-dismiss='modal') Submit
+    container
+      .chat
+        .messages
+        |  
+        input#message.form-control(type='text')
+      h2#title ###
+      #player
+      h4#time 00:00/00:00
+    script.
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      var player;
+      var vid_id = "bcCqcK_tgUg";
+      function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+      height: (9 / 16) * ($(window).width() - 400) + ''
+      , width: $(window).width() - 400 + ''
+      , videoId: vid_id
+      , playerVars: {
+      controls: 0
+      , disablekb: 1
+      , showinfo: 0
+      }
+      , events: {
+      'onReady': onPlayerReady
+      , 'onStateChange': onPlayerStateChange
+      }
+      });
+      }
+      function onPlayerReady(event) {
+      event.target.playVideo();
+      event.target.setPlaybackQuality("small");
+      setInterval(seek, 1000);
+      setInterval(updateTime, 200);
+      }
+      var done = false;
+      function onPlayerStateChange(event) {}
+      function stopVideo() {
+      player.stopVideo();
+      }
+      var player;
+      function seek() {
+      $.get("/seek", {
+      website: "youtube"
+      , videoid: "Z5ezsReZcxU"
+      }).done(function (data) {
+      var ret = JSON.parse(data);
+      var serverTime = parseInt(ret.date);
+      var clientTime = new Date().getTime();
+      var delay = clientTime - serverTime;
+      var seek = parseInt(ret.currentTime) - delay;
+      if (Math.abs(player.getCurrentTime() - seek / 1000) > .2) {
+      player.seekTo(seek / 1000);
+      }
+      });
+      }
+      var apiKey = "AIzaSyDSm23IlFZInjpmtauRNi_tz-z0Pf1ygd0";
+      try {
+      request = new XMLHttpRequest();
+      }
+      catch (e) {
+      try {
+      request = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      catch (e) {}
+      }
+      var apiKey = "AIzaSyDSm23IlFZInjpmtauRNi_tz-z0Pf1ygd0";
+      request.open("GET", "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=" + vid_id + "&key=" + apiKey, true);
+      request.onreadystatechange = function () {
+      if (request.readyState == 4) {
+      var vidInfo = JSON.parse(request.responseText);
+      document.getElementById("title").innerHTML = vidInfo.items[0].snippet.title;
+      videolength = convertISO8601ToSeconds(vidInfo.items[0].contentDetails.duration);
+      document.querySelector('#time').value = "00:00 / 00:00";
+      }
+      };
+      function updateTime() {
+      time = player.getCurrentTime();
+      document.getElementById('time').innerText = doubledigit(Math.floor(time / 60)) + ":" + doubledigit(Math.floor(time % 60)) + " / " + doubledigit(Math.floor(videolength / 60)) + ":" + doubledigit(videolength % 60);
+      }
+      function convertISO8601ToSeconds(input) {
+      var reptms = /^PT(?:(\\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+      var hours = 0
+      , minutes = 0
+      , seconds = 0
+      , totalseconds;
+      if (reptms.test(input)) {
+      var matches = reptms.exec(input);
+      if (matches[1]) hours = Number(matches[1]);
+      if (matches[2]) minutes = Number(matches[2]);
+      if (matches[3]) seconds = Number(matches[3]);
+      totalseconds = hours * 3600 + minutes * 60 + seconds;
+      }
+      return (totalseconds);
+      }
+      var doubledigit = function n(n) {
+      return n > 9 ? "" + n : "0" + n;
+      }
+      request.send();
+    script(src='/js/chat3.js')

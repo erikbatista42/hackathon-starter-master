@@ -1,6 +1,9 @@
-extends layout
-
-block content
+html
+  head
+    script(src='/js/jquery-3.1.1.min.js')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css', integrity='sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp', crossorigin='anonymous')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
     script(src='https://www.gstatic.com/firebasejs/live/3.0/firebase.js')
     style(type='text/css').
       body {
@@ -29,7 +32,7 @@ block content
       }
       .chat .messages {
       width: 100%;
-      height: calc(93% - 95px);
+      height: calc(100% - 55px);
       overflow: hidden;
       }
       .chat .messages:hover {
@@ -42,6 +45,7 @@ block content
       .modal {
       color: black;
       }
+  body
     #usernameModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='memberModalLabel', aria-hidden='true')
       .modal-dialog
         .modal-content
@@ -57,7 +61,7 @@ block content
         .messages
         |  
         input#message.form-control(type='text')
-      h2#title  ###
+      h2#title ###
       #player
       h4#time 00:00/00:00
     script.
@@ -153,4 +157,4 @@ block content
       return n > 9 ? "" + n : "0" + n;
       }
       request.send();
-      script(src='/js/chat.js')
+    script(src='/js/chat1.js')
