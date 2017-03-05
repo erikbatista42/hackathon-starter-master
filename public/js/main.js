@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
-  // Place JavaScript code here...
-
+$('#thumbnail').click(function(event) {
+	event.preventDefault();
+}); 
 });

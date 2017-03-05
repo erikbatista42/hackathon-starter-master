@@ -9,7 +9,13 @@ html
     title #{title} - Hackathon Starter
     link(rel='shortcut icon', href='/favicon.png')
     link(rel='stylesheet', href='/css/main.css')
-
+    script(src='/socket.io/socket.io.js')
+    script.
+        let socket = io.connect(window.location.href);
+        socket.on('greet', function (data) {
+        console.log(data);
+        socket.emit('respond', { message: 'Hey there, server!' });
+        });
   body
     include partials/header
 
