@@ -1,19 +1,8 @@
 $(document).ready(function () {
-    if (self!=window) {
+    if (self==window) {
         $('#usernameModal').modal('show');
-    } else {
-        $('#usernameModal').modal('hide');
     }
 });
-
-function inIframe() {
-    try {
-        return window.self !== window.top;
-    }
-    catch (e) {
-        return true;
-    }
-}
 var config = {
     apiKey: "AIzaSyBH-bdbE-D9ahSvw-HqUpDjhyVGA52IAnI"
     , authDomain: "lewhacks02.firebaseapp.com"
